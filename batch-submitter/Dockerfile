@@ -17,4 +17,4 @@ COPY --from=build /opt/optimism-monorepo /opt/optimism-monorepo
 RUN ln -s /opt/optimism-monorepo/packages/batch-submitter/exec/run-batch-submitter.js \
     /usr/local/bin/
 
-ENTRYPOINT ["node", "run-batch-submitter.js"]
+ENTRYPOINT ["run-batch-submitter.js"]
