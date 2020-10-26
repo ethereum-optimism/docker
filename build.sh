@@ -17,6 +17,7 @@ CLI Arguments:
 Default values for branche is master.
 "
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null && pwd )"
 ORG=ethereumoptimism
 SERVICE=""
 GIT_BRANCH=master
@@ -72,19 +73,19 @@ while (( "$#" )); do
   esac
 done
 
-if [ -z $SERVICE ]; then
-    echo "Please select service to build"
-    exit 1
+if [ -n "$SERVICE" ]; then
+    docker build \
+        --label "io.optimism.repo=docker" \
+        --label "io.optimism.repo.git.branch=$GIT_BRANCH" \
+        -f $DIR/$SERVICE/Dockerfile \
+        -t $ORG/$SERVICE:$TAG $DIR/$SERVICE
+else
+    SERVICES=$(cd $DIR; echo */ | tr -d '/' | tr ' ' '\n')
+    while read -r SERVICE; do
+        docker build \
+            --label "io.optimism.repo=docker" \
+            --label "io.optimism.repo.git.branch=$GIT_BRANCH" \
+            -f "$DIR/$SERVICE/Dockerfile" \
+            -t "$ORG/$SERVICE:$TAG" "$DIR/$SERVICE"
+    done <<< "$SERVICES"
 fi
-
-if [ ! -d $SERVICE ]; then
-    echo "Invalid service, valid services are:"
-    ls | grep -v '.sh'
-    exit 1
-fi
-
-docker build \
-    --label "io.optimism.repo=docker" \
-    --label "io.optimism.repo.git.branch=$GIT_BRANCH" \
-    -f $SERVICE/Dockerfile \
-    -t $ORG/$SERVICE:$TAG $SERVICE
