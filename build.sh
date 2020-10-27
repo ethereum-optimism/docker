@@ -77,15 +77,25 @@ if [ -n "$SERVICE" ]; then
     docker build \
         --label "io.optimism.repo=docker" \
         --label "io.optimism.repo.git.branch=$GIT_BRANCH" \
+        --build-arg TAG=$GIT_BRANCH \
         -f $DIR/$SERVICE/Dockerfile \
         -t $ORG/$SERVICE:$TAG $DIR/$SERVICE
+
+    if [ $TAG == 'master' ]; then
+        docker tag $ORG/$SERVICE:$TAG $ORG/$SERVICE:latest
+    fi
 else
     SERVICES=$(cd $DIR; echo */ | tr -d '/' | tr ' ' '\n')
     while read -r SERVICE; do
         docker build \
             --label "io.optimism.repo=docker" \
             --label "io.optimism.repo.git.branch=$GIT_BRANCH" \
+            --build-arg TAG=$GIT_BRANCH \
             -f "$DIR/$SERVICE/Dockerfile" \
             -t "$ORG/$SERVICE:$TAG" "$DIR/$SERVICE"
+
+        if [ "$TAG" == 'master' ]; then
+            docker tag "$ORG/$SERVICE:$TAG" "$ORG/$SERVICE:latest"
+        fi
     done <<< "$SERVICES"
 fi
