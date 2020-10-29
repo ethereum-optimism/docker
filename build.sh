@@ -73,11 +73,13 @@ while (( "$#" )); do
   esac
 done
 
+# TODO: tag flag not working when also passing a branch
+
 if [ -n "$SERVICE" ]; then
     docker build \
         --label "io.optimism.repo=docker" \
         --label "io.optimism.repo.git.branch=$GIT_BRANCH" \
-        --build-arg TAG=$GIT_BRANCH \
+        --build-arg BRANCH=$GIT_BRANCH \
         -f $DIR/$SERVICE/Dockerfile \
         -t $ORG/$SERVICE:$TAG $DIR/$SERVICE
 
@@ -90,7 +92,7 @@ else
         docker build \
             --label "io.optimism.repo=docker" \
             --label "io.optimism.repo.git.branch=$GIT_BRANCH" \
-            --build-arg TAG=$GIT_BRANCH \
+            --build-arg BRANCH=$GIT_BRANCH \
             -f "$DIR/$SERVICE/Dockerfile" \
             -t "$ORG/$SERVICE:$TAG" "$DIR/$SERVICE"
 

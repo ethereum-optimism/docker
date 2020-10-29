@@ -1,16 +1,19 @@
 FROM node:10.22.1-alpine3.10
 
+RUN apk update \
+    && apk add --no-cache bash git python alpine-sdk jq
+
 ARG BRANCH=master
 
-RUN apk update \
-    && apk add --no-cache bash git python alpine-sdk
-
-RUN git clone https://github.com/ethereum-optimism/integration-tests /integration-tests \
+RUN git clone \
+    --depth=1 \
+    --branch $BRANCH \
+    https://github.com/ethereum-optimism/integration-tests /integration-tests \
     && cd /integration-tests \
-    && git checkout $BRANCH \
     && yarn install \
     && yarn build
 
+COPY wait-for-l1-and-l2-and-contract-deployment.sh /integration-tests/wait.sh
 WORKDIR /integration-tests
 
-ENTRYPOINT [ "bash", "./exec/wait_for_dependencies.sh", "yarn", "run", "ci" ]
+ENTRYPOINT ["/integration-tests/wait.sh", "yarn", "run", "ci"]
