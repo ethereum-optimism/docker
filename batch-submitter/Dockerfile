@@ -1,7 +1,7 @@
-FROM node:10.22.1-alpine3.10 as build
+FROM node:10.23-buster as build
 
-RUN apk update \
-    && apk add --no-cache bash git python alpine-sdk
+RUN apt-get update \
+    && apt-get install -y bash git python build-essential
 
 ARG BRANCH=master
 
@@ -11,10 +11,10 @@ RUN git clone https://github.com/ethereum-optimism/optimism-monorepo /opt/optimi
     && yarn install \
     && yarn build
 
-FROM node:10.22.1-alpine3.10
+FROM node:10.23-buster
 
-RUN apk update \
-    && apk add --no-cache bash curl
+RUN apt-get update \
+    && apt-get install -y bash curl
 
 COPY --from=build /opt/optimism-monorepo /opt/optimism-monorepo
 COPY wait-for-l1-and-l2.sh /opt/

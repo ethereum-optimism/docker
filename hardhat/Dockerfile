@@ -1,7 +1,7 @@
-FROM node:10.22.1-alpine3.10 as build
+FROM node:10.23-buster as build
 
-RUN apk update \
-    && apk add --no-cache bash git python alpine-sdk
+RUN apt-get update \
+    && apt-get install -y bash git python build-essential
 
 ARG BRANCH=master
 

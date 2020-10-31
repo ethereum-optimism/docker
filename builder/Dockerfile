@@ -1,4 +1,4 @@
-FROM debian:stable
+FROM debian:buster
 
 ENV GOROOT=/usr/local/go-1.13
 ENV GOPATH=$HOME/go

@@ -73,7 +73,7 @@ while (( "$#" )); do
   esac
 done
 
-# TODO: tag flag not working when also passing a branch
+TAG=$(echo $TAG | sed 's/\//_/')
 
 if [ -n "$SERVICE" ]; then
     docker build \

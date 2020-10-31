@@ -1,6 +1,7 @@
-FROM golang:1.14-alpine as builder
+FROM golang:1.14-buster as builder
 
-RUN apk add --no-cache make gcc musl-dev linux-headers git
+RUN apt-get update \
+  && apt-get install -y build-essential
 
 ARG BRANCH=master
 
@@ -11,9 +12,11 @@ RUN git clone \
     && cd /go-ethereum \
     && make geth
 
-FROM alpine:latest
+FROM golang:1.14-buster
 
-RUN apk add --no-cache ca-certificates curl bash jq
+RUN apt-get update \
+    && apt-get install -y bash curl jq ca-certificates
+
 COPY --from=builder /go-ethereum/build/bin/geth /usr/local/bin/
 
 EXPOSE 8545 8546 8547
