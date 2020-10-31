@@ -1,0 +1,12 @@
+FROM golang:1.14-alpine as builder
+
+RUN apk add --no-cache make gcc musl-dev linux-headers git
+
+ARG BRANCH=master
+
+RUN git clone \
+    --depth=1 \
+    --branch $BRANCH \
+    https://github.com/ethereum-optimism/go-ethereum /go-ethereum \
+    && cd /go-ethereum \
+    && make geth
