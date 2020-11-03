@@ -5,7 +5,7 @@ RUN apt-get update \
 
 ARG BRANCH=master
 
-RUN git clone https://github.com/ethereum-optimism/hardhat-hackathon-boilerplate.git /opt/hardhat \
+RUN git clone https://github.com/ethereum-optimism/hardhat.git /opt/hardhat \
     && cd /opt/hardhat \
     && git checkout $BRANCH \
     && yarn
