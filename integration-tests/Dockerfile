@@ -13,7 +13,7 @@ RUN git clone \
     && yarn install \
     && yarn build
 
-COPY wait-for-l1-and-l2-and-contract-deployment.sh /integration-tests/wait.sh
+COPY wait-for-l1-and-l2-and-contract-deployment.sh /opt/wait.sh
 WORKDIR /integration-tests
 
-ENTRYPOINT ["/integration-tests/wait.sh", "yarn", "run", "ci"]
+ENTRYPOINT ["/opt/wait.sh", "yarn", "run", "ci"]
