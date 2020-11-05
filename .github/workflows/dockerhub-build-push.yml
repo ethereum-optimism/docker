@@ -28,7 +28,7 @@ jobs:
           BRANCH=${GITHUB_REF##*/}
           ./build.sh -s builder -b $BRANCH
           if [ $BRANCH == 'master' ]; then
-              docker push ethereumoptimism/batch-submitter:latest
+              docker push ethereumoptimism/builder:latest
           fi
 
       - name: Logout of DockerHub
