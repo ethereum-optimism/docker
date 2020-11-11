@@ -73,7 +73,7 @@ while (( "$#" )); do
   esac
 done
 
-TAG=$(echo $TAG | sed 's/\//_/')
+TAG=$(echo $TAG | sed 's/\//_/g')
 
 if [ -n "$SERVICE" ]; then
     docker build \
