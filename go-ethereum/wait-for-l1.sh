@@ -37,7 +37,8 @@ if [ ! -z "$DEPLOYER_HTTP" ]; then
     echo "Received address list from $DEPLOYER_HTTP"
 
     ETH1_ADDRESS_RESOLVER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .AddressManager)
-    ETH1_L1_CROSS_DOMAIN_MESSENGER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .OVM_L1CrossDomainMessenger)
+    ETH1_L1_CROSS_DOMAIN_MESSENGER_ADDRESS=$(curl --silent \
+        $DEPLOYER_HTTP/addresses.json | jq -r .Proxy__OVM_L1CrossDomainMessenger)
     ROLLUP_ADDRESS_MANAGER_OWNER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .Deployer)
     ETH1_NETWORKID=$(curl --silent -H "Content-Type: application/json" \
         --data '{"jsonrpc":"2.0","id":0,"method":"net_version","params":[]}' \
