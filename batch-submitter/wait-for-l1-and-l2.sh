@@ -38,7 +38,7 @@ if [ ! -z "$DEPLOYER_HTTP" ]; then
     echo "Contracts are deployed"
 fi
 
-RETRIES=20
+RETRIES=30
 until $(curl --silent --fail \
     --output /dev/null \
     -H "Content-Type: application/json" \
