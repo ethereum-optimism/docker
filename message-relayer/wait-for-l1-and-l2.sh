@@ -22,22 +22,6 @@ until $(curl --silent --fail \
 done
 echo "Connected to L1 Node at $L1_NODE_WEB3_URL"
 
-if [ ! -z "$DEPLOYER_HTTP" ]; then
-    RETRIES=20
-    until $(curl --silent --fail \
-        --output /dev/null \
-        "$DEPLOYER_HTTP/addresses.json"); do
-      sleep 1
-      echo "Will wait $((RETRIES--)) more times for $DEPLOYER_HTTP to be up..."
-
-      if [ "$RETRIES" -lt 0 ]; then
-        echo "Timeout waiting for contract deployment"
-        exit 1
-      fi
-    done
-    echo "Contracts are deployed"
-fi
-
 RETRIES=30
 until $(curl --silent --fail \
     --output /dev/null \
@@ -53,4 +37,24 @@ until $(curl --silent --fail \
 done
 echo "Connected to L2 Node at $L2_NODE_WEB3_URL"
 
-exec $cmd
+if [ ! -z "$DEPLOYER_HTTP" ]; then
+    RETRIES=20
+    until $(curl --silent --fail \
+        --output /dev/null \
+        "$DEPLOYER_HTTP/addresses.json"); do
+      sleep 1
+      echo "Will wait $((RETRIES--)) more times for $DEPLOYER_HTTP to be up..."
+
+      if [ "$RETRIES" -lt 0 ]; then
+        echo "Timeout waiting for contract deployment"
+        exit 1
+      fi
+    done
+    echo "Contracts are deployed"
+    ADDRESS_MANAGER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .AddressManager)
+    exec env \
+        ADDRESS_MANAGER_ADDRESS=$ADDRESS_MANAGER_ADDRESS \
+        $cmd
+else
+    exec $cmd
+fi

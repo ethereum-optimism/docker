@@ -14,7 +14,7 @@ RUN git clone https://github.com/ethereum-optimism/optimism-ts-services /opt/opt
 FROM node:10.23-buster
 
 RUN apt-get update \
-    && apt-get install -y bash curl
+    && apt-get install -y bash curl jq
 
 COPY --from=build /opt/optimism-ts-services /opt/optimism-ts-services
 COPY wait-for-l1-and-l2.sh /opt/
