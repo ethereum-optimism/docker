@@ -53,7 +53,9 @@ echo "Connected to L2 Node at $L2_NODE_WEB3_URL"
 
 
 ETH1_ADDRESS_RESOLVER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .AddressManager)
+L1_MESSENGER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .Proxy__OVM_L1CrossDomainMessenger)
 
 exec env \
     ETH1_ADDRESS_RESOLVER_ADDRESS=$ETH1_ADDRESS_RESOLVER_ADDRESS \
+    L1_MESSENGER_ADDRESS=$L1_MESSENGER_ADDRESS \
     $cmd
