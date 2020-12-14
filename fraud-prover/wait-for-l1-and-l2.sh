@@ -13,14 +13,11 @@ until $(curl --silent --fail \
     -H "Content-Type: application/json" \
     --data "$JSON" "$L1_NODE_WEB3_URL"); do
   sleep 1
+  echo "Will wait $((RETRIES--)) more times for $L1_NODE_WEB3_URL to be up..."
 
-  if [ ! -z "$NO_TIMEOUT" ]; then
-      echo "Waiting for $L2_NODE_WEB3_URL to be up..."
-  elif [ "$RETRIES" -lt 0 ]; then
-    echo "Timeout waiting for layer two node at $L2_NODE_WEB3_URL"
+  if [ "$RETRIES" -lt 0 ]; then
+    echo "Timeout waiting for layer two node at $L1_NODE_WEB3_URL"
     exit 1
-  else
-    echo "Will wait $((RETRIES--)) more times for $L2_NODE_WEB3_URL to be up..."
   fi
 done
 echo "Connected to L1 Node at $L1_NODE_WEB3_URL"
@@ -31,11 +28,13 @@ until $(curl --silent --fail \
     -H "Content-Type: application/json" \
     --data "$JSON" "$L2_NODE_WEB3_URL"); do
   sleep 1
-  echo "Will wait $((RETRIES--)) more times for $L2_NODE_WEB3_URL to be up..."
-
-  if [ "$RETRIES" -lt 0 ]; then
+  if [ ! -z "$NO_TIMEOUT" ]; then
+      echo "Waiting for $L2_NODE_WEB3_URL to be up..."
+  elif [ "$RETRIES" -lt 0 ]; then
     echo "Timeout waiting for layer two node at $L2_NODE_WEB3_URL"
     exit 1
+  else
+    echo "Will wait $((RETRIES--)) more times for $L2_NODE_WEB3_URL to be up..."
   fi
 done
 echo "Connected to L2 Node at $L2_NODE_WEB3_URL"
