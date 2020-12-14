@@ -16,7 +16,7 @@ until $(curl --silent --fail \
   echo "Will wait $((RETRIES--)) more times for $L1_NODE_WEB3_URL to be up..."
 
   if [ "$RETRIES" -lt 0 ]; then
-    echo "Timeout waiting for layer two node at $L1_NODE_WEB3_URL"
+    echo "Timeout waiting for layer one node at $L1_NODE_WEB3_URL"
     exit 1
   fi
 done
