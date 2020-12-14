@@ -30,6 +30,7 @@ until $(curl --silent --fail \
   sleep 1
   if [ ! -z "$NO_TIMEOUT" ]; then
       echo "Waiting for $L2_NODE_WEB3_URL to be up..."
+      sleep 60
   elif [ "$RETRIES" -lt 0 ]; then
     echo "Timeout waiting for layer two node at $L2_NODE_WEB3_URL"
     exit 1
