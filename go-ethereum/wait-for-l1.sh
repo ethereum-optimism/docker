@@ -36,7 +36,7 @@ if [ ! -z "$DEPLOYER_HTTP" ]; then
     done
     echo "Received address list from $DEPLOYER_HTTP"
 
-    ETH1_ADDRESS_RESOLVER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .AddressManager)
+    ETH1_ADDRESS_MANAGER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .AddressManager)
     ETH1_L1_CROSS_DOMAIN_MESSENGER_ADDRESS=$(curl --silent \
         $DEPLOYER_HTTP/addresses.json | jq -r .Proxy__OVM_L1CrossDomainMessenger)
     ROLLUP_ADDRESS_MANAGER_OWNER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .Deployer)
@@ -48,7 +48,7 @@ if [ ! -z "$DEPLOYER_HTTP" ]; then
         "$L1_NODE_WEB3_URL" | jq -r .result | xargs printf '%d')
 
     exec env \
-        ETH1_ADDRESS_RESOLVER_ADDRESS=$ETH1_ADDRESS_RESOLVER_ADDRESS \
+        ETH1_ADDRESS_MANAGER_ADDRESS=$ETH1_ADDRESS_MANAGER_ADDRESS \
         ETH1_L1_CROSS_DOMAIN_MESSENGER_ADDRESS=$ETH1_L1_CROSS_DOMAIN_MESSENGER_ADDRESS \
         ETH1_NETWORKID=$ETH1_NETWORKID \
         ROLLUP_ADDRESS_MANAGER_OWNER_ADDRESS=$ROLLUP_ADDRESS_MANAGER_OWNER_ADDRESS \

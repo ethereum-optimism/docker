@@ -52,8 +52,8 @@ done
 echo "Connected to L2 Node at $L2_NODE_WEB3_URL"
 
 
-ETH1_ADDRESS_RESOLVER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .AddressManager)
+ETH1_ADDRESS_MANAGER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .AddressManager)
 
 exec env \
-    ETH1_ADDRESS_RESOLVER_ADDRESS=$ETH1_ADDRESS_RESOLVER_ADDRESS \
+    ETH1_ADDRESS_MANAGER_ADDRESS=$ETH1_ADDRESS_MANAGER_ADDRESS \
     $cmd
