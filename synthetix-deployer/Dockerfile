@@ -5,13 +5,14 @@ RUN apt-get update \
     && mv /usr/bin/python /usr/bin/python2 \
     && ln -s $(which python3) /usr/bin/python
 
-# until deployment fix gets merged
-# ARG BRANCH=master
-ARG BRANCH=fix/deploy-ovm-pair
+# until deployment fix gets merged, hardcoded build-testhelpers
+# ARG REMOTE=https://github.com/Synthetixio/synthetix.git
+ARG REMOTE=https://github.com/tynes/synthetix.git
+ARG BRANCH=master
 
-RUN git clone https://github.com/Synthetixio/synthetix.git /opt/synthetix \
+RUN git clone $REMOTE /opt/synthetix \
     && cd /opt/synthetix \
-    && git checkout $BRANCH \
+    && git checkout build-testhelpers \
     && npm install
 
 WORKDIR /opt
