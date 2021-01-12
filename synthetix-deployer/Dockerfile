@@ -5,14 +5,12 @@ RUN apt-get update \
     && mv /usr/bin/python /usr/bin/python2 \
     && ln -s $(which python3) /usr/bin/python
 
-# until deployment fix gets merged, hardcoded build-testhelpers
-# ARG REMOTE=https://github.com/Synthetixio/synthetix.git
-ARG REMOTE=https://github.com/tynes/synthetix.git
+ARG REMOTE=https://github.com/Synthetixio/synthetix.git
 ARG BRANCH=master
 
 RUN git clone $REMOTE /opt/synthetix \
     && cd /opt/synthetix \
-    && git checkout build-testhelpers \
+    && git checkout $BRANCH \
     && npm install
 
 WORKDIR /opt
