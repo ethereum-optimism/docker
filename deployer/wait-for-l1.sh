@@ -36,8 +36,27 @@ if [ ! -z "$HARDHAT" ]; then
         $L1_NODE_WEB3_URL
 fi
 
+BASE=/opt/contracts-v2/artifacts
 RESULT=$(exec $cmd)
-echo "$RESULT" | tee /opt/contracts-v2/artifacts/addresses.json
+echo "$RESULT" | tee $BASE/addresses.json
+
+if [ ! -z "$VERIFY_ETHERSCAN" ]; then
+    mkdir -p $BASE/deployArgs
+    NETWORK=${NETWORK:-kovan}
+    KEYS=$(echo "$RESULT" | jq -r '.deployParams | keys | .[]')
+    while read KEY; do
+        CONTRACT=$(echo "$KEY" | cut -d ':' -f1)
+        DEPLOY_PARAMS=$(echo "$RESULT" \
+            | jq -r --arg key $KEY '.deployParams[$key]')
+        ADDRESS=$(echo "$RESULT" | jq --arg key $KEY '.[$key]')
+
+        echo "module.exports = $DEPLOY_PARAMS" > $BASE/deployArgs/$KEY.js
+        npx buidler verify \
+            --network $NETWORK \
+            --constructor-args $BASE/deployArgs/$KEY.js \
+            $ADDRESS
+    done <<< "$KEYS"
+fi
 
 echo "Starting HTTP server on $SERVER_PORT"
 python \

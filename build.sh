@@ -22,6 +22,7 @@ ORG=ethereumoptimism
 SERVICE=""
 GIT_BRANCH=master
 TAG=$GIT_BRANCH
+REMOTE=""
 
 while (( "$#" )); do
   case "$1" in
@@ -29,6 +30,15 @@ while (( "$#" )); do
       if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
         GIT_BRANCH="$2"
         TAG=$GIT_BRANCH
+        shift 2
+      else
+        echo "Error: Argument for $1 is missing" >&2
+        exit 1
+      fi
+      ;;
+    -r|--remote)
+      if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
+        REMOTE="$2"
         shift 2
       else
         echo "Error: Argument for $1 is missing" >&2
@@ -80,6 +90,7 @@ if [ -n "$SERVICE" ]; then
         --label "io.optimism.repo=docker" \
         --label "io.optimism.repo.git.branch=$GIT_BRANCH" \
         --build-arg BRANCH=$GIT_BRANCH \
+        --build-arg REMOTE=$REMOTE \
         -f $DIR/$SERVICE/Dockerfile \
         -t $ORG/$SERVICE:$TAG $DIR/$SERVICE
 
