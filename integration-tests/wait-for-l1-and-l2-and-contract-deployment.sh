@@ -51,9 +51,12 @@ until $(curl --silent --fail \
 done
 echo "Connected to L2 Node at $L2_NODE_WEB3_URL"
 
-
-ETH1_ADDRESS_RESOLVER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .AddressManager)
-
-exec env \
-    ETH1_ADDRESS_RESOLVER_ADDRESS=$ETH1_ADDRESS_RESOLVER_ADDRESS \
-    $cmd
+if [ ! -z "$DEPLOYER_HTTP" ]; then
+    ETH1_ADDRESS_RESOLVER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json \
+        | jq -r .AddressManager)
+    exec env \
+        ETH1_ADDRESS_RESOLVER_ADDRESS=$ETH1_ADDRESS_RESOLVER_ADDRESS \
+        $cmd
+    else
+        exec $cmd
+fi
