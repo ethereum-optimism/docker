@@ -5,11 +5,12 @@ RUN apt-get update \
 
 ARG REMOTE=https://github.com/ethereum-optimism/data-transport-layer
 ARG BRANCH=master
-ARG OUTDIR=/opt/data-transport-layer
 
-RUN git clone $REMOTE $OUTDIR \
-    && cd $OUTDIR \
-    && git checkout $BRANCH \
+RUN git clone \
+    --depth=1 \
+    --branch $BRANCH \
+    $REMOTE /opt/data-transport-layer \
+    && cd /opt/data-transport-layer \
     && yarn install \
     && yarn build
 
@@ -17,9 +18,9 @@ FROM node:10.23-buster
 RUN apt-get update \
     && apt-get install -y bash curl jq
 
-COPY --from=build $OUTDIR $OUTDIR
-COPY wait-for-l1.sh $OUTDIR/wait-for-l1.sh
+COPY --from=build /opt/data-transport-layer /opt/data-transport-layer
+COPY wait-for-l1.sh /opt/data-transport-layer/wait-for-l1.sh
 
-WORKDIR $OUTDIR
+WORKDIR /opt/data-transport/layer
 
 ENTRYPOINT ["./wait-for-l1.sh", "yarn", "start"]
