@@ -4,8 +4,9 @@ RUN apt-get update \
     && apt-get install -y bash git python build-essential
 
 ARG BRANCH=master
+ARG REMOTE=https://github.com/ethereum-optimism/batch-submitter
 
-RUN git clone https://github.com/ethereum-optimism/batch-submitter /opt/batch-submitter \
+RUN git clone $REMOTE /opt/batch-submitter \
     && cd /opt/batch-submitter \
     && git checkout $BRANCH \
     && yarn install \

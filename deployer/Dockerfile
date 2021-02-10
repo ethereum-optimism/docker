@@ -4,8 +4,9 @@ RUN apt-get update \
     && apt-get install -y bash git python build-essential libusb-1.0
 
 ARG BRANCH=master
+ARG REMOTE=https://github.com/ethereum-optimism/contracts-v2
 
-RUN git clone https://github.com/ethereum-optimism/contracts-v2 /opt/contracts-v2 \
+RUN git clone $REMOTE /opt/contracts-v2 \
     && cd /opt/contracts-v2 \
     && git checkout $BRANCH \
     && yarn install \

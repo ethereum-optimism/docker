@@ -4,8 +4,9 @@ RUN apt-get update \
     && apt-get install -y bash git python build-essential
 
 ARG BRANCH=master
+ARG REMOTE=https://github.com/ethereum-optimism/hardhat
 
-RUN git clone https://github.com/ethereum-optimism/hardhat.git /opt/hardhat \
+RUN git clone $REMOTE /opt/hardhat \
     && cd /opt/hardhat \
     && git checkout $BRANCH \
     && yarn

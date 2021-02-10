@@ -4,11 +4,12 @@ RUN apt-get update \
   && apt-get install -y build-essential
 
 ARG BRANCH=master
+ARG REMOTE=https://github.com/ethereum-optimism/go-ethereum
 
 RUN git clone \
     --depth=1 \
     --branch $BRANCH \
-    https://github.com/ethereum-optimism/go-ethereum /go-ethereum \
+    $REMOTE /go-ethereum \
     && cd /go-ethereum \
     && make geth
 

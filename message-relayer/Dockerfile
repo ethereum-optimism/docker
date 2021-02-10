@@ -9,8 +9,9 @@ RUN apt-get update \
     && apt-get install -y bash git python build-essential
 
 ARG BRANCH=master
+ARG REMOTE=https://github.com/ethereum-optimism/optimism-ts-services
 
-RUN git clone https://github.com/ethereum-optimism/optimism-ts-services /opt/optimism-ts-services \
+RUN git clone $REMOTE /opt/optimism-ts-services \
     && cd /opt/optimism-ts-services \
     && git checkout $BRANCH \
     && yarn install \
