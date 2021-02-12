@@ -1,10 +1,11 @@
-FROM node:10.23-buster as build
+FROM node:10.23-buster
 
 RUN apt-get update \
     && apt-get install -y bash git python build-essential jq
 
 ARG BRANCH=master
 ARG REMOTE=https://github.com/ethereum-optimism/integration-tests
+LABEL io.optimism.repo.git.remote=$REMOTE
 
 RUN git clone \
     --depth=1 \
