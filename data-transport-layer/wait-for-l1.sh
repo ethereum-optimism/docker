@@ -20,5 +20,27 @@ until $(curl --silent --fail \
     exit 1
   fi
 done
-
 echo "Connected to L1 Node at $L1_NODE_WEB3_URL"
+
+if [ ! -z "$DEPLOYER_HTTP" ]; then
+    RETRIES=20
+    until $(curl --silent --fail \
+        --output /dev/null \
+        "$DEPLOYER_HTTP/addresses.json"); do
+      sleep 1
+      echo "Will wait $((RETRIES--)) more times for $DEPLOYER_HTTP to be up..."
+
+      if [ "$RETRIES" -lt 0 ]; then
+        echo "Timeout waiting for address list from $DEPLOYER_HTTP"
+        exit 1
+      fi
+    done
+    echo "Received address list from $DEPLOYER_HTTP"
+
+    DATA_TRANSPORT_LAYER__ADDRESS_MANAGER=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .AddressManager)
+    exec env \
+        DATA_TRANSPORT_LAYER__ADDRESS_MANAGER=$DATA_TRANSPORT_LAYER__ADDRESS_MANAGER \
+        $cmd
+else
+    exec $cmd
+fi
