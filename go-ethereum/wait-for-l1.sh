@@ -5,18 +5,19 @@
 # github.com/ethereum-optimism
 
 cmd="$@"
-JSON='{"jsonrpc":"2.0","id":0,"method":"net_version","params":[]}'
+if [ -z "$ROLLUP_CLIENT_HTTP" ]; then
+    echo "Missing ROLLUP_CLIENT_HTTP env var"
+fi
 
 RETRIES=20
 until $(curl --silent --fail \
     --output /dev/null \
-    -H "Content-Type: application/json" \
-    --data "$JSON" "$L1_NODE_WEB3_URL"); do
+    "$ROLLUP_CLIENT_HTTP"); do
   sleep 1
-  echo "Will wait $((RETRIES--)) more times for $L1_NODE_WEB3_URL to be up..."
+  echo "Will wait $((RETRIES--)) more times for $ROLLUP_CLIENT_HTTP to be up..."
 
   if [ "$RETRIES" -lt 0 ]; then
-    echo "Timeout waiting for layer one node at $L1_NODE_WEB3_URL"
+    echo "Timeout waiting for layer one node at $ROLLUP_CLIENT_HTTP"
     exit 1
   fi
 done
@@ -40,19 +41,11 @@ if [ ! -z "$DEPLOYER_HTTP" ]; then
     ETH1_L1_CROSS_DOMAIN_MESSENGER_ADDRESS=$(curl --silent \
         $DEPLOYER_HTTP/addresses.json | jq -r .Proxy__OVM_L1CrossDomainMessenger)
     ROLLUP_ADDRESS_MANAGER_OWNER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .Deployer)
-    ETH1_NETWORKID=$(curl --silent -H "Content-Type: application/json" \
-        --data '{"jsonrpc":"2.0","id":0,"method":"net_version","params":[]}' \
-        "$L1_NODE_WEB3_URL" | jq -r .result)
-    ETH1_CHAINID=$(curl --silent -H "Content-Type: application/json" \
-        --data '{"jsonrpc":"2.0","id":0,"method":"eth_chainId","params":[]}' \
-        "$L1_NODE_WEB3_URL" | jq -r .result | xargs printf '%d')
 
     exec env \
         ETH1_ADDRESS_RESOLVER_ADDRESS=$ETH1_ADDRESS_RESOLVER_ADDRESS \
         ETH1_L1_CROSS_DOMAIN_MESSENGER_ADDRESS=$ETH1_L1_CROSS_DOMAIN_MESSENGER_ADDRESS \
-        ETH1_NETWORKID=$ETH1_NETWORKID \
         ROLLUP_ADDRESS_MANAGER_OWNER_ADDRESS=$ROLLUP_ADDRESS_MANAGER_OWNER_ADDRESS \
-        ETH1_CHAINID=$ETH1_CHAINID \
         $cmd
 else
     exec $cmd
