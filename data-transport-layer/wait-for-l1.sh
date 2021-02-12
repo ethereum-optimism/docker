@@ -6,6 +6,7 @@
 
 cmd="$@"
 JSON='{"jsonrpc":"2.0","id":0,"method":"net_version","params":[]}'
+L1_NODE_WEB3_URL=$DATA_TRANSPORT_LAYER__L1_RPC_ENDPOINT
 
 RETRIES=20
 until $(curl --silent --fail \
