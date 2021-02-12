@@ -12,7 +12,7 @@ fi
 RETRIES=20
 until $(curl --silent --fail \
     --output /dev/null \
-    "$ROLLUP_CLIENT_HTTP"); do
+    "$ROLLUP_CLIENT_HTTP/eth/syncing"); do
   sleep 1
   echo "Will wait $((RETRIES--)) more times for $ROLLUP_CLIENT_HTTP to be up..."
 
