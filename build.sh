@@ -22,6 +22,7 @@ ORG=ethereumoptimism
 SERVICE=""
 GIT_BRANCH=master
 TAG=$GIT_BRANCH
+REMOTE=""
 
 while (( "$#" )); do
   case "$1" in
@@ -38,6 +39,15 @@ while (( "$#" )); do
     -s|--service)
       if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
         SERVICE="$2"
+        shift 2
+      else
+        echo "Error: Argument for $1 is missing" >&2
+        exit 1
+      fi
+      ;;
+    -r|--remote)
+      if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
+        REMOTE="$2"
         shift 2
       else
         echo "Error: Argument for $1 is missing" >&2
@@ -75,27 +85,31 @@ done
 
 TAG=$(echo $TAG | sed 's/\//_/g')
 
-if [ -n "$SERVICE" ]; then
-    docker build \
-        --label "io.optimism.repo=docker" \
-        --label "io.optimism.repo.git.branch=$GIT_BRANCH" \
-        --build-arg BRANCH=$GIT_BRANCH \
-        -f $DIR/$SERVICE/Dockerfile \
-        -t $ORG/$SERVICE:$TAG $DIR/$SERVICE
+function build() {
+    cmd="docker build"
+    cmd="$cmd --label io.optimism.repo=docker"
+    cmd="$cmd --label io.optimism.repo.git.branch=$GIT_BRANCH"
+    cmd="$cmd --build-arg BRANCH=$GIT_BRANCH"
+    if [ ! -z "$REMOTE" ]; then
+        cmd="$cmd --build-arg REMOTE=$REMOTE"
+    fi
+    cmd="$cmd -f $DIR/$SERVICE/Dockerfile"
+    cmd="$cmd -t $ORG/$SERVICE:$TAG $DIR/$SERVICE"
 
+    $cmd
+}
+
+if [ -n "$SERVICE" ]; then
+    build
     if [ $TAG == 'master' ]; then
         docker tag $ORG/$SERVICE:$TAG $ORG/$SERVICE:latest
     fi
 else
     SERVICES=$(cd $DIR; echo */ | tr -d '/' | tr ' ' '\n')
     while read -r SERVICE; do
-        docker build \
-            --label "io.optimism.repo=docker" \
-            --label "io.optimism.repo.git.branch=$GIT_BRANCH" \
-            --build-arg BRANCH=$GIT_BRANCH \
-            -f "$DIR/$SERVICE/Dockerfile" \
-            -t "$ORG/$SERVICE:$TAG" "$DIR/$SERVICE"
-
+        # only default remotes are supported when building all
+        REMOTE=
+        build
         if [ "$TAG" == 'master' ]; then
             docker tag "$ORG/$SERVICE:$TAG" "$ORG/$SERVICE:latest"
         fi

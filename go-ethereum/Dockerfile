@@ -1,18 +1,26 @@
+ARG BRANCH=master
+ARG REMOTE=https://github.com/ethereum-optimism/go-ethereum
+
 FROM golang:1.14-buster as builder
 
 RUN apt-get update \
   && apt-get install -y build-essential
 
-ARG BRANCH=master
+ARG BRANCH
+ARG REMOTE
 
 RUN git clone \
     --depth=1 \
     --branch $BRANCH \
-    https://github.com/ethereum-optimism/go-ethereum /go-ethereum \
+    $REMOTE /go-ethereum \
     && cd /go-ethereum \
     && make geth
 
 FROM golang:1.14-buster
+
+ARG BRANCH
+ARG REMOTE
+LABEL io.optimism.repo.git.remote=$REMOTE
 
 RUN apt-get update \
     && apt-get install -y bash curl jq ca-certificates
