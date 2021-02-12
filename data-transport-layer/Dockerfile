@@ -21,6 +21,6 @@ RUN apt-get update \
 COPY --from=build /opt/data-transport-layer /opt/data-transport-layer
 COPY wait-for-l1.sh /opt/data-transport-layer/wait-for-l1.sh
 
-WORKDIR /opt/data-transport/layer
+WORKDIR /opt/data-transport-layer
 
 ENTRYPOINT ["./wait-for-l1.sh", "yarn", "start"]
