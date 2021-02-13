@@ -4,7 +4,7 @@ ARG REMOTE=https://github.com/ethereum-optimism/batch-submitter
 FROM node:10.23-buster as build
 
 RUN apt-get update \
-    && apt-get install -y bash git python build-essential
+    && apt-get install -y bash git python build-essential jq
 
 ARG BRANCH
 ARG REMOTE
