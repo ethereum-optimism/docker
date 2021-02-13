@@ -53,4 +53,12 @@ until $(curl --silent --fail \
 done
 echo "Connected to L2 Node at $L2_NODE_WEB3_URL"
 
-exec $cmd
+if [ ! -z "$DEPLOYER_HTTP" ]; then
+  ADDRESS_MANAGER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json \
+    | jq -r .AddressManager)
+  exec env \
+    ADDRESS_MANAGER_ADDRESS=$ADDRESS_MANAGER_ADDRESS \
+    $cmd
+  else
+    exec $cmd
+fi
