@@ -23,18 +23,20 @@ done
 echo "Connected to L1 Node at $L1_NODE_WEB3_URL"
 
 RETRIES=20
-until $(curl --silent --fail \
-    --output /dev/null \
-    "$DEPLOYER_HTTP/addresses.json"); do
-  sleep 1
-  echo "Will wait $((RETRIES--)) more times for $DEPLOYER_HTTP to be up..."
+if [ ! -z "$DEPLOYER_HTTP" ]; then
+    until $(curl --silent --fail \
+        --output /dev/null \
+        "$DEPLOYER_HTTP/addresses.json"); do
+      sleep 1
+      echo "Will wait $((RETRIES--)) more times for $DEPLOYER_HTTP to be up..."
 
-  if [ "$RETRIES" -lt 0 ]; then
-    echo "Timeout waiting for contract deployment"
-    exit 1
-  fi
-done
-echo "Contracts are deployed"
+      if [ "$RETRIES" -lt 0 ]; then
+        echo "Timeout waiting for contract deployment"
+        exit 1
+      fi
+    done
+    echo "Contracts are deployed"
+fi
 
 RETRIES=30
 until $(curl --silent --fail \

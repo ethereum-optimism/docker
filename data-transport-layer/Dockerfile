@@ -19,8 +19,8 @@ RUN apt-get update \
     && apt-get install -y bash curl jq
 
 COPY --from=build /opt/data-transport-layer /opt/data-transport-layer
-COPY wait-for-l1.sh /opt/data-transport-layer/wait-for-l1.sh
+COPY wait-for-l1.sh /opt/wait-for-l1.sh
 
-WORKDIR /opt/data-transport/layer
+WORKDIR /opt/data-transport-layer
 
-ENTRYPOINT ["./wait-for-l1.sh", "yarn", "start"]
+ENTRYPOINT ["/opt/wait-for-l1.sh", "yarn", "start"]
