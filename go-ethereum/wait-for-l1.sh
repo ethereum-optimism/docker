@@ -39,6 +39,7 @@ if [ ! -z "$DEPLOYER_HTTP" ]; then
     ETH1_ADDRESS_RESOLVER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .AddressManager)
     ETH1_L1_CROSS_DOMAIN_MESSENGER_ADDRESS=$(curl --silent \
         $DEPLOYER_HTTP/addresses.json | jq -r .Proxy__OVM_L1CrossDomainMessenger)
+    ETH1_L1_ETH_GATEWAY_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .OVM_L1ETHGateway)
     ROLLUP_ADDRESS_MANAGER_OWNER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .Deployer)
     ETH1_NETWORKID=$(curl --silent -H "Content-Type: application/json" \
         --data '{"jsonrpc":"2.0","id":0,"method":"net_version","params":[]}' \
@@ -50,6 +51,7 @@ if [ ! -z "$DEPLOYER_HTTP" ]; then
     exec env \
         ETH1_ADDRESS_RESOLVER_ADDRESS=$ETH1_ADDRESS_RESOLVER_ADDRESS \
         ETH1_L1_CROSS_DOMAIN_MESSENGER_ADDRESS=$ETH1_L1_CROSS_DOMAIN_MESSENGER_ADDRESS \
+        ETH1_L1_ETH_GATEWAY_ADDRESS=$ETH1_L1_ETH_GATEWAY_ADDRESS \
         ETH1_NETWORKID=$ETH1_NETWORKID \
         ROLLUP_ADDRESS_MANAGER_OWNER_ADDRESS=$ROLLUP_ADDRESS_MANAGER_OWNER_ADDRESS \
         ETH1_CHAINID=$ETH1_CHAINID \
