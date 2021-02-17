@@ -9,7 +9,7 @@ if [ -z "$ROLLUP_CLIENT_HTTP" ]; then
     echo "Missing ROLLUP_CLIENT_HTTP env var"
 fi
 
-RETRIES=20
+RETRIES=30
 until $(curl --silent --fail \
     --output /dev/null \
     "$ROLLUP_CLIENT_HTTP/eth/syncing"); do
@@ -40,11 +40,13 @@ if [ ! -z "$DEPLOYER_HTTP" ]; then
     ETH1_ADDRESS_RESOLVER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .AddressManager)
     ETH1_L1_CROSS_DOMAIN_MESSENGER_ADDRESS=$(curl --silent \
         $DEPLOYER_HTTP/addresses.json | jq -r .Proxy__OVM_L1CrossDomainMessenger)
+    ETH1_L1_ETH_GATEWAY_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .OVM_L1ETHGateway)
     ROLLUP_ADDRESS_MANAGER_OWNER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .Deployer)
 
     exec env \
         ETH1_ADDRESS_RESOLVER_ADDRESS=$ETH1_ADDRESS_RESOLVER_ADDRESS \
         ETH1_L1_CROSS_DOMAIN_MESSENGER_ADDRESS=$ETH1_L1_CROSS_DOMAIN_MESSENGER_ADDRESS \
+        ETH1_L1_ETH_GATEWAY_ADDRESS=$ETH1_L1_ETH_GATEWAY_ADDRESS \
         ROLLUP_ADDRESS_MANAGER_OWNER_ADDRESS=$ROLLUP_ADDRESS_MANAGER_OWNER_ADDRESS \
         $cmd
 else
