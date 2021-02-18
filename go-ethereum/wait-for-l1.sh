@@ -5,19 +5,18 @@
 # github.com/ethereum-optimism
 
 cmd="$@"
-if [ -z "$ROLLUP_CLIENT_HTTP" ]; then
-    echo "Missing ROLLUP_CLIENT_HTTP env var"
-fi
+JSON='{"jsonrpc":"2.0","id":0,"method":"net_version","params":[]}'
 
-RETRIES=30
+RETRIES=20
 until $(curl --silent --fail \
     --output /dev/null \
-    "$ROLLUP_CLIENT_HTTP/eth/syncing"); do
+    -H "Content-Type: application/json" \
+    --data "$JSON" "$L1_NODE_WEB3_URL"); do
   sleep 1
-  echo "Will wait $((RETRIES--)) more times for $ROLLUP_CLIENT_HTTP to be up..."
+  echo "Will wait $((RETRIES--)) more times for $L1_NODE_WEB3_URL to be up..."
 
   if [ "$RETRIES" -lt 0 ]; then
-    echo "Timeout waiting for layer one node at $ROLLUP_CLIENT_HTTP"
+    echo "Timeout waiting for layer one node at $L1_NODE_WEB3_URL"
     exit 1
   fi
 done
@@ -40,14 +39,20 @@ if [ ! -z "$DEPLOYER_HTTP" ]; then
     ETH1_ADDRESS_RESOLVER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .AddressManager)
     ETH1_L1_CROSS_DOMAIN_MESSENGER_ADDRESS=$(curl --silent \
         $DEPLOYER_HTTP/addresses.json | jq -r .Proxy__OVM_L1CrossDomainMessenger)
-    ETH1_L1_ETH_GATEWAY_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .OVM_L1ETHGateway)
     ROLLUP_ADDRESS_MANAGER_OWNER_ADDRESS=$(curl --silent $DEPLOYER_HTTP/addresses.json | jq -r .Deployer)
+    ETH1_NETWORKID=$(curl --silent -H "Content-Type: application/json" \
+        --data '{"jsonrpc":"2.0","id":0,"method":"net_version","params":[]}' \
+        "$L1_NODE_WEB3_URL" | jq -r .result)
+    ETH1_CHAINID=$(curl --silent -H "Content-Type: application/json" \
+        --data '{"jsonrpc":"2.0","id":0,"method":"eth_chainId","params":[]}' \
+        "$L1_NODE_WEB3_URL" | jq -r .result | xargs printf '%d')
 
     exec env \
         ETH1_ADDRESS_RESOLVER_ADDRESS=$ETH1_ADDRESS_RESOLVER_ADDRESS \
         ETH1_L1_CROSS_DOMAIN_MESSENGER_ADDRESS=$ETH1_L1_CROSS_DOMAIN_MESSENGER_ADDRESS \
-        ETH1_L1_ETH_GATEWAY_ADDRESS=$ETH1_L1_ETH_GATEWAY_ADDRESS \
+        ETH1_NETWORKID=$ETH1_NETWORKID \
         ROLLUP_ADDRESS_MANAGER_OWNER_ADDRESS=$ROLLUP_ADDRESS_MANAGER_OWNER_ADDRESS \
+        ETH1_CHAINID=$ETH1_CHAINID \
         $cmd
 else
     exec $cmd
