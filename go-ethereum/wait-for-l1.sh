@@ -9,7 +9,7 @@ if [ -z "$ROLLUP_CLIENT_HTTP" ]; then
     echo "Missing ROLLUP_CLIENT_HTTP env var"
 fi
 
-RETRIES=30
+RETRIES=${RETRIES:-20}
 until $(curl --silent --fail \
     --output /dev/null \
     "$ROLLUP_CLIENT_HTTP/eth/syncing"); do
@@ -23,7 +23,7 @@ until $(curl --silent --fail \
 done
 
 if [ ! -z "$DEPLOYER_HTTP" ]; then
-    RETRIES=20
+    RETRIES=${RETRIES:-20}
     until $(curl --silent --fail \
         --output /dev/null \
         "$DEPLOYER_HTTP/addresses.json"); do
