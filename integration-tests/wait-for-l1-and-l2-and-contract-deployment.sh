@@ -7,7 +7,7 @@
 cmd="$@"
 JSON='{"jsonrpc":"2.0","id":0,"method":"eth_chainId","params":[]}'
 
-RETRIES=20
+RETRIES=${RETRIES:-20}
 until $(curl --silent --fail \
     --output /dev/null \
     -H "Content-Type: application/json" \
@@ -22,7 +22,7 @@ until $(curl --silent --fail \
 done
 echo "Connected to L1 Node at $L1_NODE_WEB3_URL"
 
-RETRIES=20
+RETRIES=${RETRIES:-20}
 if [ ! -z "$DEPLOYER_HTTP" ]; then
     until $(curl --silent --fail \
         --output /dev/null \
@@ -38,7 +38,7 @@ if [ ! -z "$DEPLOYER_HTTP" ]; then
     echo "Contracts are deployed"
 fi
 
-RETRIES=30
+RETRIES=${RETRIES:-30}
 until $(curl --silent --fail \
     --output /dev/null \
     -H "Content-Type: application/json" \

@@ -8,7 +8,7 @@ cmd="$@"
 JSON='{"jsonrpc":"2.0","id":0,"method":"net_version","params":[]}'
 L1_NODE_WEB3_URL=$DATA_TRANSPORT_LAYER__L1_RPC_ENDPOINT
 
-RETRIES=20
+RETRIES=${RETRIES:-20}
 until $(curl --silent --fail \
     --output /dev/null \
     -H "Content-Type: application/json" \
@@ -24,7 +24,7 @@ done
 echo "Connected to L1 Node at $L1_NODE_WEB3_URL"
 
 if [ ! -z "$DEPLOYER_HTTP" ]; then
-    RETRIES=20
+    RETRIES=${RETRIES:-20}
     until $(curl --silent --fail \
         --output /dev/null \
         "$DEPLOYER_HTTP/addresses.json"); do
