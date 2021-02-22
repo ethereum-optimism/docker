@@ -10,7 +10,7 @@ L1_NODE_WEB3_URL=$DATA_TRANSPORT_LAYER__L1_RPC_ENDPOINT
 L2_NODE_WEB3_URL=$DATA_TRANSPORT_LAYER__L2_RPC_ENDPOINT
 DATA_TRANSPORT_LAYER__L2_CHAIN_ID=$DATA_TRANSPORT_LAYER__L2_CHAIN_ID
 
-RETRIES=20
+RETRIES=${RETRIES:-20}
 until $(curl --silent --fail \
     --output /dev/null \
     -H "Content-Type: application/json" \
@@ -26,7 +26,7 @@ done
 echo "Connected to L1 Node at $L1_NODE_WEB3_URL"
 
 if [[ "$DATA_TRANSPORT_LAYER__SYNC_FROM_L2" == true ]]; then
-    RETRIES=20
+    RETRIES=${RETRIES:-20}
     until $(curl --silent --fail \
         --output /dev/null \
         -H "Content-Type: application/json" \
@@ -48,7 +48,7 @@ if [[ "$DATA_TRANSPORT_LAYER__SYNC_FROM_L2" == true ]]; then
 fi
 
 if [ ! -z "$DEPLOYER_HTTP" ]; then
-    RETRIES=20
+    RETRIES=${RETRIES:-20}
     until $(curl --silent --fail \
         --output /dev/null \
         "$DEPLOYER_HTTP/addresses.json"); do
