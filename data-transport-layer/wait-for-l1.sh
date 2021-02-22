@@ -44,7 +44,7 @@ if [[ "$DATA_TRANSPORT_LAYER__SYNC_FROM_L2" == true ]]; then
     DATA_TRANSPORT_LAYER__L2_CHAIN_ID=$(curl --silent -H \
         "Content-Type: application/json" \
         --data '{"jsonrpc":"2.0","id":0,"method":"eth_chainId","params":[]}' \
-        "$L2_NODE_WEB3_URL")
+        "$L2_NODE_WEB3_URL" | jq -r .result)
 fi
 
 if [ ! -z "$DEPLOYER_HTTP" ]; then
