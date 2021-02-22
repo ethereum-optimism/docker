@@ -7,6 +7,7 @@ ARG BRANCH=master
 ARG REMOTE=https://github.com/ethereum-optimism/integration-tests
 LABEL io.optimism.repo.git.remote=$REMOTE
 
+RUN git ls-remote $REMOTE | grep heads/$BRANCH | tee /cache.txt
 RUN git clone \
     --depth=1 \
     --branch $BRANCH \
