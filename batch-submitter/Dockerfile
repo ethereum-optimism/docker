@@ -10,6 +10,7 @@ ARG BRANCH
 ARG REMOTE
 LABEL io.optimism.repo.git.remote=$REMOTE
 
+RUN git ls-remote $REMOTE | grep heads/$BRANCH | tee /cache.txt
 RUN git clone $REMOTE /opt/batch-submitter \
     && cd /opt/batch-submitter \
     && git checkout $BRANCH \

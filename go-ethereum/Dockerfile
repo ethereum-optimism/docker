@@ -9,6 +9,7 @@ RUN apt-get update \
 ARG BRANCH
 ARG REMOTE
 
+RUN git ls-remote $REMOTE | grep heads/$BRANCH | tee /cache.txt
 RUN git clone \
     --depth=1 \
     --branch $BRANCH \

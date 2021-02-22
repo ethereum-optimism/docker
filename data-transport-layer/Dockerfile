@@ -6,6 +6,7 @@ RUN apt-get update \
 ARG REMOTE=https://github.com/ethereum-optimism/data-transport-layer
 ARG BRANCH=master
 
+RUN git ls-remote $REMOTE | grep heads/$BRANCH | tee /cache.txt
 RUN git clone \
     --depth=1 \
     --branch $BRANCH \

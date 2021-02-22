@@ -14,6 +14,7 @@ RUN apt-get update \
 ARG BRANCH
 ARG REMOTE
 
+RUN git ls-remote $REMOTE | grep heads/$BRANCH | tee /cache.txt
 RUN git clone $REMOTE /opt/optimism-ts-services \
     && cd /opt/optimism-ts-services \
     && git checkout $BRANCH \
