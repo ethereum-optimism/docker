@@ -29,4 +29,4 @@ COPY wait-for-l1.sh /opt/wait-for-l1.sh
 ENV SERVER_PORT=8080
 WORKDIR /opt/contracts-v2
 
-ENTRYPOINT ["/opt/wait-for-l1.sh", "yarn", "deploy"]
+ENTRYPOINT ["/opt/wait-for-l1.sh", "yarn", "run", "--silent", "deploy"]
