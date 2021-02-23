@@ -1,4 +1,4 @@
-ARG REMOTE=https://github.com/ethereum-optimism/contracts-v2
+ARG REMOTE=https://github.com/ethereum-optimism/contracts
 ARG BRANCH=master
 
 FROM node:10.23-buster as build
@@ -8,8 +8,8 @@ RUN apt-get update \
 ARG REMOTE
 ARG BRANCH
 RUN git ls-remote $REMOTE | grep heads/$BRANCH | tee /cache.txt
-RUN git clone $REMOTE /opt/contracts-v2 \
-    && cd /opt/contracts-v2 \
+RUN git clone $REMOTE /opt/contracts \
+    && cd /opt/contracts \
     && git checkout $BRANCH \
     && yarn install \
     && yarn build
@@ -23,10 +23,10 @@ RUN apt-get update \
     && mv /usr/bin/python /usr/bin/python2 \
     && ln -s $(which python3) /usr/bin/python
 
-COPY --from=build /opt/contracts-v2 /opt/contracts-v2
+COPY --from=build /opt/contracts /opt/contracts
 COPY wait-for-l1.sh /opt/wait-for-l1.sh
 
 ENV SERVER_PORT=8080
-WORKDIR /opt/contracts-v2
+WORKDIR /opt/contracts
 
 ENTRYPOINT ["/opt/wait-for-l1.sh", "yarn", "run", "--silent", "deploy"]
