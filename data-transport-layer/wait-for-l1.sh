@@ -10,14 +10,11 @@ L1_NODE_WEB3_URL=$DATA_TRANSPORT_LAYER__L1_RPC_ENDPOINT
 L2_NODE_WEB3_URL=$DATA_TRANSPORT_LAYER__L2_RPC_ENDPOINT
 DATA_TRANSPORT_LAYER__L2_CHAIN_ID=$DATA_TRANSPORT_LAYER__L2_CHAIN_ID
 
-if [[ -z "$L1_NODE_WEB3_URL" ]]; then
-    echo "Missing DATA_TRANSPORT_LAYER__L1_RPC_ENDPOINT env var"
-    exit 1
-fi
-
-if [[ -z "$L2_NODE_WEB3_URL" ]]; then
-    echo "Missing DATA_TRANSPORT_LAYER__L2_RPC_ENDPOINT env var"
-    exit 1
+if [[ "$DATA_TRANSPORT_LAYER__SYNC_FROM_L1" == true ]]; then
+    if [[ -z "$L1_NODE_WEB3_URL" ]]; then
+        echo "Missing DATA_TRANSPORT_LAYER__L1_RPC_ENDPOINT env var"
+        exit 1
+    fi
 fi
 
 RETRIES=${RETRIES:-20}
@@ -36,6 +33,11 @@ done
 echo "Connected to L1 Node at $L1_NODE_WEB3_URL"
 
 if [[ "$DATA_TRANSPORT_LAYER__SYNC_FROM_L2" == true ]]; then
+    if [[ -z "$L2_NODE_WEB3_URL" ]]; then
+        echo "Missing DATA_TRANSPORT_LAYER__L2_RPC_ENDPOINT env var"
+        exit 1
+    fi
+
     RETRIES=${RETRIES:-20}
     until $(curl --silent --fail \
         --output /dev/null \
