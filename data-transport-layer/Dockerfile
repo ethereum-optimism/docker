@@ -1,4 +1,4 @@
-FROM node:10.23-buster as build
+FROM node:14-buster as build
 
 RUN apt-get update \
     && apt-get install -y bash git build-essential
@@ -15,7 +15,7 @@ RUN git clone \
     && yarn install \
     && yarn build
 
-FROM node:10.23-buster
+FROM node:14-buster
 RUN apt-get update \
     && apt-get install -y bash curl jq
 

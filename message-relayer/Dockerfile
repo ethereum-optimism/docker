@@ -1,7 +1,7 @@
 ARG BRANCH=master
 ARG REMOTE=https://github.com/ethereum-optimism/optimism-ts-services
 
-FROM node:10.23-buster as base
+FROM node:14-buster as base
 
 RUN apt-get update \
     && apt-get install -y bash curl jq
