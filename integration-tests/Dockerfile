@@ -1,4 +1,4 @@
-FROM node:10.23-buster
+FROM node:14-buster
 
 RUN apt-get update \
     && apt-get install -y bash git python build-essential jq

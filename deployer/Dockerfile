@@ -1,7 +1,7 @@
 ARG REMOTE=https://github.com/ethereum-optimism/contracts
 ARG BRANCH=master
 
-FROM node:10.23-buster as build
+FROM node:14-buster as build
 RUN apt-get update \
     && apt-get install -y bash git python build-essential libusb-1.0
 
@@ -14,7 +14,7 @@ RUN git clone $REMOTE /opt/contracts \
     && yarn install \
     && yarn build
 
-FROM node:10.23-buster
+FROM node:14-buster
 ARG REMOTE
 LABEL io.optimism.repo.git.remote=$REMOTE
 
