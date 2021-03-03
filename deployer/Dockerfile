@@ -24,9 +24,9 @@ RUN apt-get update \
     && ln -s $(which python3) /usr/bin/python
 
 COPY --from=build /opt/contracts /opt/contracts
-COPY wait-for-l1.sh /opt/wait-for-l1.sh
+COPY wait-for-l1.sh /wait-for-l1.sh
 
 ENV SERVER_PORT=8080
 WORKDIR /opt/contracts
 
-ENTRYPOINT ["/opt/wait-for-l1.sh", "yarn", "run", "--silent", "deploy"]
+ENTRYPOINT ["/wait-for-l1.sh", "yarn", "run", "--silent", "deploy"]
