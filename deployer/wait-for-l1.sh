@@ -6,6 +6,7 @@
 
 cmd="$@"
 JSON='{"jsonrpc":"2.0","id":0,"method":"net_version","params":[]}'
+SERVE_DIRECTORY=${SERVE_DIRECTORY:-/opt/contracts/build}
 
 RETRIES=${RETRIES:-20}
 until $(curl --silent --fail \
@@ -24,10 +25,10 @@ done
 echo "Connected to L1 Node at $L1_NODE_WEB3_URL"
 
 RESULT=$(exec $cmd)
-echo "$RESULT" | tee /opt/contracts/build/addresses.json
+echo "$RESULT" | tee $SERVE_DIRECTORY/addresses.json
 
 echo "Starting HTTP server on $SERVER_PORT"
 python \
     -m http.server \
     --bind 0.0.0.0 $SERVER_PORT \
-    --directory /opt/contracts/build
+    --directory $SERVE_DIRECTORY
