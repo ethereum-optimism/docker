@@ -20,15 +20,20 @@ jobs:
       - name: Login to DockerHub Registry
         run: echo ${{ secrets.DOCKERHUB_ACCESS_TOKEN_SECRET }} | docker login -u ${{ secrets.DOCKERHUB_ACCESS_TOKEN_USERNAME}} --password-stdin
 
-      - name: Build and push Build image to DockerHub
+      - name: Build and push Builder image to DockerHub
         run: |
-          git clone https://github.com/ethereum-optimism/docker.git \
-              $HOME/docker
-          cd $HOME/docker
           BRANCH=${GITHUB_REF##*/}
           ./build.sh -s builder -b $BRANCH
           if [ $BRANCH == 'master' ]; then
               docker push ethereumoptimism/builder:latest
+          fi
+
+      - name: Build and push Failover proxy image to DockerHub
+        run: |
+          BRANCH=${GITHUB_REF##*/}
+          ./build.sh -s failover-proxy -b $BRANCH
+          if [ $BRANCH == 'master' ]; then
+              docker push ethereumoptimism/failover-proxy:latest
           fi
 
       - name: Logout of DockerHub
